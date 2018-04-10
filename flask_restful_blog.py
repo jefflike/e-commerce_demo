@@ -1,15 +1,21 @@
-from flask import Flask
-import config
+'''
+__title__ = 'flask_restful_blog.py'
+__author__ = 'Jeffd'
+__time__ = '4/10/18 11:55 PM'
+'''
+from flask_migrate import Migrate, MigrateCommand
+from flask_script import Manager
 
-app = Flask(__name__)
+from app import create_app
+from app.models.models import db
+from config import Config
 
-app.config.from_object(config.config['development'])
 
+app = create_app(Config)
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
-
+manager = Manager(app)
+migrate = Migrate(app, db)
+manager.add_command('db', MigrateCommand)
 
 if __name__ == '__main__':
-    app.run()
+    manager.run()

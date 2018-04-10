@@ -3,9 +3,8 @@ __title__ = 'models.py'
 __author__ = 'Jeffd'
 __time__ = '4/10/18 11:02 AM'
 '''
-from flask_sqlalchemy import SQLAlchemy
-from flask_restful_blog import app
-db = SQLAlchemy(app)
+from .base import db, Base
+from sqlalchemy import func
 
 
 posts_tags = db.Table('posts_tags',
@@ -13,7 +12,7 @@ posts_tags = db.Table('posts_tags',
     db.Column('tag_id', db.String(45), db.ForeignKey('tags.id')))
 
 
-class User(db.Model):
+class User(Base):
     """
     用户模型类
     """
@@ -30,7 +29,7 @@ class User(db.Model):
         return "<Model User `{}`>".format(self.username)
 
 
-class Post(db.Model):
+class Post(Base):
     __tablename__ = 'posts'
     id = db.Column(db.String(45), primary_key=True)
     title = db.Column(db.String(255))
@@ -52,8 +51,23 @@ class Post(db.Model):
     def __repr__(self):
         return "<Model Post `{}`>".format(self.title)
 
+    @property
+    def new_post(self):
+        '''
+        最近发布的5篇post
+        :return:
+        '''
+        self.recent = db.session.query(Post).order_by(
+                Post.publish_date.desc()
+            ).limit(5).all()
+        return self.recent
 
-class Comment(db.Model):
+    @new_post.setter
+    def new_post(self, raw):
+        raise Exception("不可以修改文章的时间")
+
+
+class Comment(Base):
     __tablename__ = 'comments'
     id = db.Column(db.String(45), primary_key=True)
     name = db.Column(db.String(255))
@@ -72,3 +86,16 @@ class Tag(db.Model):
 
     def __repr__(self):
         return "<Model Tag `{}`>".format(self.name)
+
+    @property
+    def hot_tag(self):
+        self.top_tags = db.session.query(
+            Tag, func.count(posts_tags.c.post_id).label('total')
+        ).join(
+            posts_tags
+        ).group_by(Tag).order_by('total DESC').limit(5).all()
+        return self.top_tags
+
+    @hot_tag.setter
+    def hot_tag(self, raw):
+        raise Exception("文章最多的标签顺序不可修改")
