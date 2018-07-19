@@ -1,1 +1,0 @@
-这是一个基于flask的restful风格的demo
