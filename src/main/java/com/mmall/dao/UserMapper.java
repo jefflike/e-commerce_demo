@@ -22,4 +22,8 @@ public interface UserMapper {
     User getUserByUserameAndPassword(@Param("username") String username, @Param("password") String password);
 
     int checkEmail(String email);
+
+    String getQuestionByUsername(String username);
+
+
 }

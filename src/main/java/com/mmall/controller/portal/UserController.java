@@ -4,7 +4,6 @@ import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
-import com.mmall.service.impl.IUserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,18 +56,49 @@ public class UserController {
     @RequestMapping(value = "regist.do", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> regist(User user){
-        ServerResponse<String> response = iUserService.regist(user);
-        return response;
+//        ServerResponse<String> response = iUserService.regist(user);
+        return iUserService.regist(user);
     }
 
     /**
      *  检验email和用户名是否存在，在注册时虽然有判断，此处进行判断是因为方便ajax实时的判断
      *  检验email与用户名存在的状态
      */
-    @RequestMapping(value = "checkValid.do", method = RequestMethod.GET)
+    @RequestMapping(value = "check_valid.do", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> checkValid(String str, String type){
-        ServerResponse<String> serverResponse = iUserService.checkValid(str, type);
-        return serverResponse;
+        // 简化代码，舍去不必要的参数
+//        ServerResponse<String> serverResponse = iUserService.checkValid(str, type);
+        return iUserService.checkValid(str, type);
+    }
+
+    /**
+     * 获取用户信息
+     */
+    @RequestMapping(value = "get_userInfo.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<User> getUserInfo(HttpSession session){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user != null){
+            return ServerResponse.createBySuccess(user);
+        }
+        return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户信息");
+    }
+
+
+    /**
+     * 忘记密码的找回问题
+     */
+    @RequestMapping(value = "get_questionByUsername.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<String> getQuestionByUsername(String username){
+        return iUserService.getQuestionByUsername(username);
+    }
+
+    /**
+     * 判断找回密码问题的答案是否正确
+     */
+    public ServerResponse<String> forgetCheckAnswer(String username, String question, String answer){
+        return null;
     }
 }

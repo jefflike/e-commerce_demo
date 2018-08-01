@@ -168,4 +168,9 @@
     select count(1) from mmall_user where
     email = #{email}
   </select>
+
+  <select id="getQuestionByUsername" parameterType="String" resultType="String">
+    select question from mmall_user where
+    username = #{username}
+  </select>
 </mapper>

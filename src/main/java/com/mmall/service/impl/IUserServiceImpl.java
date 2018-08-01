@@ -61,17 +61,18 @@ public class IUserServiceImpl implements IUserService {
         if(checkUsername == 0){
             return ServerResponse.createByErrorMessage("注册失败");
         }
-        return ServerResponse.createByErrorMessage("注册成功");
+        return ServerResponse.createBySuccessMessage("注册成功");
     }
 
     /**
      * isBlank只要是空就不行，空格返回也是false，isEmpty默认空格是非空的返回true
-     * @param str
-     * @param type
+     * @param str: 前端input传回来的值
+     * @param type: 前端input的类型，是判断email的还是username的实时判断
      * @return
      */
     @Override
     public ServerResponse<String> checkValid(String str, String type) {
+        // 返回的type必须有值才能进行判断
         if(org.apache.commons.lang3.StringUtils.isBlank(type)){
             if(Const.EMAIL.equals(type)){
                 int checkEmail = userMapper.checkEmail(str);
@@ -89,5 +90,25 @@ public class IUserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("参数错误");
         }
         return ServerResponse.createBySuccessMessage("校验成功");
+    }
+
+    @Override
+    public ServerResponse<String> getQuestionByUsername(String username) {
+        ServerResponse<String> response = this.checkValid(username, Const.USERNAME);
+        if(response.isSuccess()){
+            return ServerResponse.createByErrorMessage("用户不存在");
+        }
+        String question = userMapper.getQuestionByUsername(username);
+        // 需要判断取到的问题不是空的
+        if(org.apache.commons.lang3.StringUtils.isNotBlank(question)){
+            return ServerResponse.createBySuccessMessage(question);
+        }
+        return ServerResponse.createByErrorMessage("设置的问题为空");
+    }
+
+    @Override
+    public ServerResponse<String> forgetCheckAnswer(String username, String question, String answer) {
+
+        return null;
     }
 }

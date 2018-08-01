@@ -10,5 +10,7 @@ public interface IUserService {
     ServerResponse<User> login(String username, String password);
     ServerResponse<String> regist(User user);
     ServerResponse<String> checkValid(String str, String type);
+    ServerResponse<String> getQuestionByUsername(String userame);
+    ServerResponse<String> forgetCheckAnswer(String username, String question, String answer);
 
 }
