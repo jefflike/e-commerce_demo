@@ -1,5 +1,6 @@
 #common ignore
 .idea/
+.idea/*
 .svn/
 *.iml
 .settings/
