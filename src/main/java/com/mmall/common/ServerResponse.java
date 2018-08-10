@@ -1,12 +1,13 @@
 package com.mmall.common;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
 
 /**
- * 这是一个通用端相应对象，T代表响应封装的数据对象是什么类型
+ * 这是一个通用端响应对象，T代表响应封装的数据对象是什么类型
  * JsonSerialize（有的没有msg有的没有data）将没有的就取消掉，返回的时候就不包含
  * 这个注解的Inclusion.NON_NULL就是序列化的时候，如果是null的对象，key也会消失
  * @param <T>

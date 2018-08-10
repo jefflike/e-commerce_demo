@@ -152,7 +152,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   
-  <select id="checkUsername" parameterType="String" resultType="int">
+  <select id="checkUsername" parameterType="String" resultType="java.lang.Integer">
     select count(1) from mmall_user where
     username = #{username}
   </select>
@@ -164,13 +164,34 @@
     where username = #{username} and password = #{password}
   </select>
 
-  <select id="checkEmail" parameterType="String" resultType="int">
+  <select id="checkEmail" parameterType="String" resultType="java.lang.Integer">
     select count(1) from mmall_user where
     email = #{email}
   </select>
 
-  <select id="getQuestionByUsername" parameterType="String" resultType="String">
+  <select id="getQuestionByUsername" parameterType="String" resultType="java.lang.String">
     select question from mmall_user where
     username = #{username}
   </select>
+
+  <select id="getAccountByUserAndQuesAndAnswer" parameterType="map" resultType="java.lang.Integer">
+    select count(1) from mmall_user where
+    username = #{username} and
+    question = #{question} and
+    answer = #{answer}
+  </select>
+
+    <update id="updatePasswordByUsername" >
+        update mmall_user
+        set password = #{password},update_time = now()
+        where username = #{username}
+    </update>
+    
+    <select id="checkPassword" parameterType="map" resultType="int">
+        select count(1) from mmall_user where id = #{userId} and password = #{password}
+    </select>
+
+    <select id="checkEmailByUserid" parameterType="map" resultType="int">
+        select count(1) from mmall_user where email = #{email} and id != #{userId}
+    </select>
 </mapper>

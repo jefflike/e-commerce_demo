@@ -23,6 +23,7 @@
             <!--MappingJacksonHttpMessageConverter已过期，supportedMediaTypes就是要在jackson里注入的属性
             AbstractHttpMessageConverter（MappingJackson2HttpMessageConverter的一个父类）中定义了supportedMediaTypes私有属性并注入值
             private List<MediaType> supportedMediaTypes = Collections.emptyList();是一个集合，所以注入list的属性
+            pom引入的方式也改变了
             -->
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
                 <property name="supportedMediaTypes">
