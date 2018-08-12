@@ -3,8 +3,6 @@ package com.mmall.service;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
 
-import javax.servlet.http.HttpSession;
-
 /**
  * I开头方便维护时知道这是一个接口
  */
