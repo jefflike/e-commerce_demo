@@ -1,5 +1,6 @@
 package com.mmall.controller.backend;
 
+import com.github.pagehelper.PageInfo;
 import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
@@ -10,6 +11,7 @@ import com.mmall.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
@@ -32,7 +34,7 @@ public class ProductManagerController {
      */
     @RequestMapping("save.do")
     @ResponseBody
-    ServerResponse productSave(HttpSession session, Product product){
+    public ServerResponse productSave(HttpSession session, Product product){
         User user = (User) session.getAttribute(Const.USERNAME);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NO_LOGIN.getCode(), "请登录再操作");
@@ -46,9 +48,16 @@ public class ProductManagerController {
         }
     }
 
+    /**
+     * 改变商品的状态
+     * @param session
+     * @param productId
+     * @param status
+     * @return
+     */
     @RequestMapping("setSaleStatus.do")
     @ResponseBody
-    ServerResponse setSaleStatus(HttpSession session, Integer productId, Integer status){
+    public ServerResponse setSaleStatus(HttpSession session, Integer productId, Integer status){
         User user = (User) session.getAttribute(Const.USERNAME);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NO_LOGIN.getCode(), "请登录再操作");
@@ -56,22 +65,51 @@ public class ProductManagerController {
         ServerResponse serverResponse = iUserService.checkRoleManager(user);
         if(serverResponse.isSuccess()){
 //            return iProductService.saveOrUpdateProduct();
+            return iProductService.setSaleStatus(productId, status);
         }else {
             return ServerResponse.createByErrorMessage("当前用户无管理员权限");
         }
     }
 
-    // 获取产品详情
-    @RequestMapping("getProductMessage.do")
+    /** 获取产品详情
+     * @param session
+     * @param productId
+     * @param status
+     * @return
+     */
+    @RequestMapping("getProductDetail.do")
     @ResponseBody
-    ServerResponse getProductMessage(HttpSession session, Integer productId, Integer status){
+    public ServerResponse getProductDetail(HttpSession session, Integer productId, Integer status){
         User user = (User) session.getAttribute(Const.USERNAME);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NO_LOGIN.getCode(), "请登录再操作");
         }
         ServerResponse serverResponse = iUserService.checkRoleManager(user);
         if(serverResponse.isSuccess()){
-            return null;
+            return iProductService.manageProductDetail(productId);
+        }else {
+            return ServerResponse.createByErrorMessage("当前用户无管理员权限");
+        }
+    }
+
+    /**
+     * 管理后台产品list，数据较多，需要做分页
+     * @param session
+     * @param productId
+     * @param status
+     * @return
+     */
+    @RequestMapping("getProductList.do")
+    @ResponseBody
+    public ServerResponse getProductList(HttpSession session, @RequestParam(value = "pageno", defaultValue = "1") int pageno, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+        User user = (User) session.getAttribute(Const.USERNAME);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NO_LOGIN.getCode(), "请登录再操作");
+        }
+        ServerResponse serverResponse = iUserService.checkRoleManager(user);
+        if(serverResponse.isSuccess()){
+            //需要动态分页,使用插件实现非常简单，三步走
+            return iProductService.getProductList(pageno, pageSize);
         }else {
             return ServerResponse.createByErrorMessage("当前用户无管理员权限");
         }

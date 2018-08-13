@@ -176,4 +176,12 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!--这个是我们分页查询的sql，插件分页肯定会用到limit加在我们的语句后面，所以我们加分号就无法进行正常插件分页操作了-->
+<select id="selectAllProduct" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List" />
+  from mmall_product
+  order by id asc
+</select>
 </mapper>

@@ -8,15 +8,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
-/**
- * Created by geely
- */
 public class PropertiesUtil {
 
     private static Logger logger = LoggerFactory.getLogger(PropertiesUtil.class);
 
     private static Properties props;
 
+    // 我们希望我们在Tomcat启动的时候就读取到配置，所以我们将读取配置文件的操作放到静态代码块中执行
     static {
         String fileName = "mmall.properties";
         props = new Properties();
@@ -27,6 +25,11 @@ public class PropertiesUtil {
         }
     }
 
+    /**
+     * 通过配置文件中的key获取参数的方法，两个方法形成重载
+     * @param key
+     * @return
+     */
     public static String getProperty(String key){
         String value = props.getProperty(key.trim());
         if(StringUtils.isBlank(value)){
@@ -43,7 +46,5 @@ public class PropertiesUtil {
         }
         return value.trim();
     }
-
-
 
 }
