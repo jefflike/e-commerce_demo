@@ -167,4 +167,29 @@ public class ProductServiceImpl implements IProductService {
 
         return productListVo;
     }
+
+    public ServerResponse<PageInfo> searchProduct(String productName,Integer productId, int pageno, int pageSize){
+        // 第一步，startPage记录一个开始
+        PageHelper.startPage(pageno, pageSize);
+
+        // todo
+        if(StringUtils.isNotBlank(productName)){
+            productName = new StringBuilder().append("%").append(productName).append("%").toString();
+        }
+
+        List<Product> productList = productMapper.selectByPrimaryKeyAndName( productName, productId);
+        // 此时查出来的list信息过于详细，我们的list是不需要这么多信息的，所以我们做一个list的vo
+        // 第二步，填充自己的sql查询逻辑
+        List<ProductListVo> productListVoList = Lists.newArrayList();
+        for (Product productItem : productList){
+            ProductListVo productListVo = assembleProductListVo(productItem);
+            productListVoList.add(productListVo);
+        }
+        // 第三步，pageHelper收尾
+        // 根据sql返回的集合就根据他自动进行分页处理了
+        PageInfo pageResult = new PageInfo(productList);
+        // 此时pageResult中的参数都是vo类型的参数了
+        pageResult.setList(productListVoList);
+        return ServerResponse.createBySuccess(pageResult);
+    }
 }
