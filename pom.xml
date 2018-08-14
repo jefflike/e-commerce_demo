@@ -9,6 +9,7 @@
   <url>http://maven.apache.org</url>
 
   <properties>
+    <!--统一管理一些包的版本-->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
@@ -20,13 +21,15 @@
 
   <!--项目依赖的jar包-->
   <dependencies>
-
+    <!--Tomcat的环境jar-->
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-servlet-api</artifactId>
       <version>7.0.64</version>
+      <scope>provided</scope>
     </dependency>
 
+    <!--spring相关的jar，版本被统一管理在上面-->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
@@ -57,7 +60,6 @@
       <version>${org.springframework.version}</version>
     </dependency>
 
-
     <dependency>
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjweaver</artifactId>
@@ -69,6 +71,7 @@
       <artifactId>mybatis-spring</artifactId>
       <version>${org.mybatis.spring.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.mybatis</groupId>
       <artifactId>mybatis</artifactId>
@@ -81,30 +84,30 @@
       <version>1.6.11</version>
     </dependency>
 
-      <!--spring4.x后面把这个方法砍掉了，我们现在用得要用2-->
+    <!--spring4.x后面把这个方法砍掉了，我们现在用得要用2-->
     <!--<dependency>-->
-      <!--<groupId>org.codehaus.jackson</groupId>-->
-      <!--<artifactId>jackson-mapper-asl</artifactId>-->
-      <!--<version>1.9.12</version>-->
+    <!--<groupId>org.codehaus.jackson</groupId>-->
+    <!--<artifactId>jackson-mapper-asl</artifactId>-->
+    <!--<version>1.9.12</version>-->
     <!--</dependency>-->
-    <!--我这里使用一个老版本的jackson试一试-->
+    <!--使用一个新版本的jackson-->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
       <version>2.5.1</version>
     </dependency>
+
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <version>2.5.1</version>
     </dependency>
+
     <dependency>
       <groupId>commons-dbcp</groupId>
       <artifactId>commons-dbcp</artifactId>
       <version>1.4</version>
-      <!--<scope>runtime</scope>-->
     </dependency>
-
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -112,6 +115,7 @@
       <version>1.1.2</version>
       <scope>compile</scope>
     </dependency>
+
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
@@ -131,13 +135,11 @@
       <version>20.0</version>
     </dependency>
 
-
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.5</version>
     </dependency>
-
 
     <dependency>
       <groupId>commons-collections</groupId>
@@ -145,12 +147,11 @@
       <version>3.2.1</version>
     </dependency>
 
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.12</version>
-      <!--<scope>test</scope>-->
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -159,14 +160,12 @@
       <version>2.3</version>
     </dependency>
 
-
     <!-- id加密解密 -->
     <dependency>
       <groupId>org.hashids</groupId>
       <artifactId>hashids</artifactId>
       <version>1.0.1</version>
     </dependency>
-
 
     <!-- ftpclient -->
     <dependency>
@@ -190,9 +189,6 @@
       <version>2.0.1</version>
     </dependency>
 
-
-
-
     <!-- mybatis pager -->
 
     <dependency>
@@ -213,38 +209,43 @@
       <version>0.9.4</version>
     </dependency>
 
-
     <!-- alipay -->
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
       <version>1.10</version>
     </dependency>
+
     <dependency>
       <groupId>commons-configuration</groupId>
       <artifactId>commons-configuration</artifactId>
       <version>1.10</version>
     </dependency>
+
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
       <version>2.6</version>
     </dependency>
+
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>1.1.1</version>
     </dependency>
+
     <dependency>
       <groupId>com.google.zxing</groupId>
       <artifactId>core</artifactId>
       <version>2.1</version>
     </dependency>
+
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
       <version>2.3.1</version>
     </dependency>
+
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-core</artifactId>
@@ -257,7 +258,6 @@
       <version>2.9.0</version>
     </dependency>
   </dependencies>
-
 
   <build>
     <finalName>mmall</finalName>
@@ -289,6 +289,5 @@
     </plugins>
 
   </build>
-
 
 </project>

@@ -172,7 +172,7 @@ public class ProductServiceImpl implements IProductService {
         // 第一步，startPage记录一个开始
         PageHelper.startPage(pageno, pageSize);
 
-        // todo
+        // 将传入的产品名进行模糊查询的字符串拼接
         if(StringUtils.isNotBlank(productName)){
             productName = new StringBuilder().append("%").append(productName).append("%").toString();
         }

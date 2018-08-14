@@ -16,6 +16,4 @@
     <aop:aspectj-autoproxy/>
 
     <import resource="applicationContext-datasource.xml"/>
-
-
 </beans>
