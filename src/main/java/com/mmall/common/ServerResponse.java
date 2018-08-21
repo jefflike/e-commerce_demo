@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ServerResponse<T> implements Serializable {
+    // 通过用户接口分析可以知道，返回有三种形式。
     private int status;
     private String  msg;
     private T data;
@@ -38,12 +39,13 @@ public class ServerResponse<T> implements Serializable {
         this.data = data;
     }
 
-    // JsonIgnore学历恶化默认忽略这个字段
+    // JsonIgnore序列化默认忽略这个字段
     @JsonIgnore
     public boolean isSuccess(){
         return this.status == ResponseCode.SUCCESS.getCode();
     }
 
+    // 获取其中的值
     public int getStatus(){
         return status;
     }
@@ -57,6 +59,8 @@ public class ServerResponse<T> implements Serializable {
     }
 
     // 需要指定泛型，返回前端是msg或者data是不确定的所以需要泛型指定
+    // 通用方法是static修饰，且status等属性由Const提供
+    // 需要一个构造器，传入参数是int
     public static <T> ServerResponse<T> createBySuccess(){
         return new ServerResponse<T>(ResponseCode.SUCCESS.getCode());
     }
@@ -65,6 +69,7 @@ public class ServerResponse<T> implements Serializable {
         return new ServerResponse<T>(ResponseCode.SUCCESS.getCode(), msg);
     }
 
+    // 不同的参数名可以直接区分传参是string还是data
     public static <T> ServerResponse<T> createBySuccess(T data){
         return new ServerResponse<T>(ResponseCode.SUCCESS.getCode(), data);
     }

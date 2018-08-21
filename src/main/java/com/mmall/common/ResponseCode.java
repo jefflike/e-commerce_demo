@@ -20,6 +20,7 @@ public enum ResponseCode {
         this.desc = desc;
     }
 
+    // 高复用服务响应对象会调用这个方法，获取当前响应的信息
     public int getCode() {
         return code;
     }

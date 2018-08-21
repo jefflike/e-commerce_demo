@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
 // 向上注入的接口的属性名iUserService
@@ -21,6 +20,12 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private UserMapper userMapper;
 
+    /**
+     * @describe: 我们这里返回值就应该是高复用响应对象，这样在控制器就避免写业务逻辑，直接判断获得结果，这里应该是业务逻辑的主要编写
+     * @param username
+     * @param password
+     * @return
+     */
     @Override
     public ServerResponse<User> login(String username, String password) {
 
@@ -28,7 +33,7 @@ public class UserServiceImpl implements IUserService {
         int resultCount = userMapper.checkUsername(username);
 
         if(resultCount == 0){
-            return ServerResponse.createByErrorMessage("用户名或密码有误");
+            return ServerResponse.createByErrorMessage("用户名不存在");
         }
 
         // 预留一个密码登录的md5方法
@@ -39,6 +44,8 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("密码有误");
         }
 
+        // 我们不会将密码也返回到数据中，所以我们将它置空
+        // 返回json中有字段password": "",后期优化去掉，可使用vo去掉这个字段
         user.setPassword(StringUtils.EMPTY);
         return ServerResponse.createBySuccess("登录成功", user);
     }
@@ -47,6 +54,7 @@ public class UserServiceImpl implements IUserService {
     public ServerResponse<String> regist(User user) {
         // 使用下面的方法将代码复用
         ServerResponse<String> stringServerResponse = this.checkValid(user.getUsername(), Const.USERNAME);
+        // 未验证成功的情况提前返回错误的高复用响应对象，结束方法
         if(!stringServerResponse.isSuccess()){
             return stringServerResponse;
         }
@@ -98,6 +106,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ServerResponse<String> getQuestionByUsername(String username) {
+        // 还是要先判断用户是否存在
         ServerResponse<String> response = this.checkValid(username, Const.USERNAME);
         // 返回值要是success，那它的code就要是成功，checkValid当用户名不存在时可以插入，所以此时用户名不存在
         if(response.isSuccess()){

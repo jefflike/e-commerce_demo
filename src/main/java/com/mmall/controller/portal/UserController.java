@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 /**
  * 用户模块,所有的用户接口包括管理员都使用post方式提交
+ * 我们的控制器里避免写大量的业务代码，我这里是没有写业务的，控制器里非常清晰
  */
 @Controller
 @RequestMapping("/user/")
@@ -27,6 +28,8 @@ public class UserController {
      * 用户登录模块,除了方便测试，所有的用户相关的接口都要是post方法
      * ResponseBody返回的时候自动调用springmvc的jackson插件将返回值json序列化
      * 在dispatch-servlet.xml中配置supportedMediaTypes属性为json我们返回值默认就被赋值为json类型了
+     * 需要使用到HttpSession
+     * Service里对于错误的复用响应对象已经实现了，所以Controller中可以不出现new 复用响应对象
      * @param username
      * @param password
      * @param session
@@ -37,11 +40,17 @@ public class UserController {
     public ServerResponse<User> login(String username, String password, HttpSession session){
         ServerResponse<User> response = iUserService.login(username, password);
         if(response.isSuccess()){
+            // 登陆成功将用户信息存到session域中,data此时就是user对象
             session.setAttribute(Const.CURRENT_USER, response.getData());
         }
         return response;
     }
 
+    /**
+     * 虽然只是logout但是还是要返回高复用响应对象
+     * @param session
+     * @return
+     */
     @RequestMapping(value = "logout.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<User> logout(HttpSession session){
@@ -74,9 +83,11 @@ public class UserController {
     }
 
     /**
-     * 获取用户信息
+     * 获取用户信息， 我们前面不是将用户的信息都放到session域中了吗，所以这里只要session就可以了，不需要传入id
+     * 既然已经在session域中了，我们就不要查询数据库了，没必要，直接处理就好了
+     * 这里也有一点小问题，返回的json包括了问题答案的一些东西，后期在vo中过滤
      */
-    @RequestMapping(value = "get_userInfo.do", method = RequestMethod.POST)
+    @RequestMapping(value = "get_user_info.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<User> getUserInfo(HttpSession session){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
@@ -98,7 +109,7 @@ public class UserController {
 
     /**
      * 判断找回密码问题的答案是否正确
-     * 需要使用guawa解决本地缓存问题，用本地guawa做缓存，利用有效期管理
+     * 需要使用guava解决本地缓存问题，用本地guava做缓存，利用有效期管理
      */
     @RequestMapping(value = "get_forgetCheckAnswer.do", method = RequestMethod.POST)
     @ResponseBody

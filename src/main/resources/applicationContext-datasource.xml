@@ -24,6 +24,7 @@
         <property name="fileEncoding" value="utf-8"/>
     </bean>
 
+    <!--dbcp的连接池有bug，连接navicat时，我们的连接池不可获得连接？我们改用c3p0.-->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${db.driverClassName}"/>
         <property name="url" value="${db.url}"/>
