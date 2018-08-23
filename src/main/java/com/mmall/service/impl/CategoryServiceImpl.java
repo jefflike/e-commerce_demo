@@ -80,7 +80,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
         // 我们要返回的是一个category的集合,也是用guava提供的初始化方法
         List<Integer> categoryIdList = Lists.newArrayList();
-        if(categoryIdList != null){
+        if(categoryId != null){
             for(Category category : categorySet){
                 categoryIdList.add(category.getId());
             }
@@ -89,7 +89,7 @@ public class CategoryServiceImpl implements ICategoryService {
     }
     /**
      * 写一个递归函数，选择Set结构直接可以排重，但是要做到去重，我们的种类需要重写hashCode代码和equals代码
-     * 定义一个Set参数，将Set再返回给方法本身
+     * 定义一个Set参数，将Set再返回给方法本身,注意set去重的条件是重写这个类的equals与hashCode方法
      */
     private Set<Category> findChildCategory(Set<Category> categorySet ,Integer categoryId){
         Category category = categoryMapper.selectByPrimaryKey(categoryId);
@@ -106,7 +106,5 @@ public class CategoryServiceImpl implements ICategoryService {
         }
         return categorySet;
     }
-
-
 
 }

@@ -35,12 +35,12 @@ public class CategoryManageController {
     @RequestMapping("addCategory.do")
     @ResponseBody
     public ServerResponse addCategory(HttpSession session, String categoryName, @RequestParam(value = "parentId", defaultValue = "0") int parentId){
-        // 第一步先判断用户是否登录
+        // 第一步先判断用户是否登录(可以抽取方法单独做成一个功能)
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if( user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NO_LOGIN.getCode(), "请先登录账户");
         }
-        // 第二部判断用户是否是管理员
+        // 第二步判断用户是否是管理员
         if(iUserService.checkRoleManager(user).isSuccess()){
             // 有管理员权限，进行增加种类的逻辑
             return iCategoryService.addCategory(categoryName, parentId);

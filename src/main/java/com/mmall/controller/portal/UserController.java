@@ -101,7 +101,7 @@ public class UserController {
     /**
      * 忘记密码的找回问题
      */
-    @RequestMapping(value = "get_questionByUsername.do", method = RequestMethod.POST)
+    @RequestMapping(value = "forget_get_question.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> getQuestionByUsername(String username){
         return iUserService.getQuestionByUsername(username);
@@ -111,7 +111,7 @@ public class UserController {
      * 判断找回密码问题的答案是否正确
      * 需要使用guava解决本地缓存问题，用本地guava做缓存，利用有效期管理
      */
-    @RequestMapping(value = "get_forgetCheckAnswer.do", method = RequestMethod.POST)
+    @RequestMapping(value = "forget_check_answer.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> forgetCheckAnswer(String username, String question, String answer){
         return iUserService.forgetCheckAnswer(username, question, answer);
@@ -120,7 +120,7 @@ public class UserController {
     /**
      * 忘记密码的重置密码，需要问题、答案、有效Token和新密码md5加密后的值，Token的值从前端获取，并与guava中的token作对比
      */
-    @RequestMapping(value = "forgetResetPassword.do", method = RequestMethod.POST)
+    @RequestMapping(value = "forget_reset_password.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> forgetResetPassword(String username, String password, String forgetToken){
         return iUserService.forgetResetPassword(username,password,forgetToken);
@@ -140,7 +140,8 @@ public class UserController {
     }
     /**
      * 更新个人用户信息的方法，我们的返回值是一个user，我们在更新完用户信息之后，要将新的用户信息放到session里，同时要把新的用户信息返回给前端
-     * 然后前端把信息直接跟新到页面上,形参的user对象是我们用来承载新的数据的对象，user中都是常规信息，但是没有userid，防止横向越权行为
+     * 然后前端把信息直接跟新到页面上,形参的user对象是我们用来承载新的数据的对象，user中都是常规信息，但是没有userid，防止横向越权行为,需要先将
+     * 当前的用户id赋值给他
      */
     @RequestMapping(value = "updateInformation.do", method = RequestMethod.POST)
     @ResponseBody
@@ -151,11 +152,11 @@ public class UserController {
             return ServerResponse.createByErrorMessage("请先登录或者忘记密码");
         }
         // 我们的user封装的信息有很多，但是没有id的值，我们需要取出当前登录的user的id赋值进去
-        // 这样做的原因是防止横向越权，我们把id就指定为当前用户的id
+        // 这样做的原因是防止横向越权，我们把id就指定为当前用户的id，user就是当前session对象中的username
         user.setId(currentUser.getId());
         user.setUsername(currentUser.getUsername());
         ServerResponse<User> response = iUserService.updateInformation(user);
-        // 如果更新是成功的，则更新我们的session
+        // 如果更新是成功的，则更新我们的session到域中
         if(response.isSuccess()){
             session.setAttribute(Const.CURRENT_USER, response);
         }
@@ -164,7 +165,7 @@ public class UserController {
 
     /**
      * 获取用户的详细信息
-     * 修改信息之前会先查询当前的用户信息，必须保证用户登录，所以update的时候只需要判断是否登录即可
+     * 修改信息之前会先查询当前的用户信息，必须保证用户登录，update的时候（前一步肯定是先查，查的时候已经强制登录过了）只需要判断是否登录即可，不需要强制提示登录
      * 查提问问题或者提问答案都可以通过此接口来实现了
      */
     @RequestMapping(value = "selectInformation.do", method = RequestMethod.POST)

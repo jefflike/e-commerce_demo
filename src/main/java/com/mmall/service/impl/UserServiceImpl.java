@@ -138,12 +138,17 @@ public class UserServiceImpl implements IUserService {
         if(org.apache.commons.lang3.StringUtils.isBlank(forgetToken)){
             return ServerResponse.createByErrorMessage("token必须传递");
         }
+
+        if(StringUtils.isBlank(password)){
+            return ServerResponse.createByErrorMessage("密码参数异常");
+        }
         // 接下来要检验username不能为空，如果为空那么cache中的key就变成了"Token_" + username，修改的就是别的null用户的密码了
         ServerResponse<String> response = this.checkValid(username, Const.USERNAME);
         if(response.isSuccess()){
             return ServerResponse.createByErrorMessage("用户不存在");
         }
 
+        // 获取这个用户在guava中存储的数据即Token
         String token = TokenCache.getKey(TokenCache.TOKEN_PRIFIX + username);
 
         // 判断取出的token为不为空
@@ -190,6 +195,7 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     public ServerResponse<User> updateInformation(User user){
+        // username不可以被更新
         int countEmail = userMapper.checkEmailByUserid(user.getEmail(), user.getId());
         // 大于0这说明这个email已经被其他用户占用了。
         if(countEmail > 0 ){

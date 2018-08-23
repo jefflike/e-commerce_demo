@@ -30,7 +30,7 @@ public class UserMannagerController {
         if(response.isSuccess()){
             User user = response.getData();
             // 当登录的用户的权限是一个管理员的时候，我们才将他放到session域中
-            if(user.getRole() == Const.Role.ROLE_CUSTOM ){
+            if(user.getRole() == Const.Role.ROLE_MANAGER ){
                 session.setAttribute(Const.CURRENT_USER, user);
                 // 成功才将response返回去
                 return response;
